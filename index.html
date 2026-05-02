@@ -7,46 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } 
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCS_xJK5uwGVtmXu8PDaQkPM3uUhDnT64",
-    authDomain: "aiml-pro-service.firebaseapp.com",
-    projectId: "aiml-pro-service",
-    storageBucket: "aiml-pro-service.appspot.com",
-    messagingSenderId: "658179166795",
-    appId: "1:658179166795:web:730039ebd833df527b33ce"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  window.firebaseAuth = auth;
-
-  function initRecaptcha() {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: () => {
-            console.log("Recaptcha solved");
-          }
-        },
-        auth
-      );
-    }
-  }
-
-  if (document.readyState === "complete") {
-    initRecaptcha();
-  } else {
-    window.addEventListener("load", initRecaptcha);
-  }
-</script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -487,7 +448,7 @@
 </style>
 </head>
 <body>
-<div id="recaptcha-container"></div>
+
 <div class="grid-bg"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
@@ -656,89 +617,10 @@ function App() {
 
 
 
-let timerRef = useRef(null);
-
-const sendOtp = async () => {
-  if (!form.phone || form.phone.length < 10) {
-    showToast('Enter a valid 10-digit phone number', 'error');
-    return;
-  }
-
-  setOtp(prev => ({
-    ...prev,
-    sending: true
-  }));
-
-  try {
-    const phoneNumber = "+91" + form.phone;
-
-    const appVerifier = window.recaptchaVerifier;
-
-    const confirmationResult = await signInWithPhoneNumber(
-      window.firebaseAuth,
-      phoneNumber,
-      appVerifier
-    );
-
-    window.confirmationResult = confirmationResult;
-
-    setOtp(prev => ({
-      ...prev,
-      sent: true,
-      sending: false,
-      timer: 60,
-      input: ""
-    }));
-
-    showToast("OTP sent via SMS!", "success");
-
-    let t = 60;
-
-    if (timerRef.current) clearInterval(timerRef.current);
-
-    timerRef.current = setInterval(() => {
-      t--;
-
-      setOtp(prev => ({
-        ...prev,
-        timer: t
-      }));
-
-      if (t <= 0) clearInterval(timerRef.current);
-    }, 1000);
-
-  } catch (err) {
-    console.log(err);
-    setOtp(prev => ({ ...prev, sending: false }));
-    showToast("OTP failed. Check Firebase setup.", "error");
-  }
-};
- const verifyOtp = async (val) => {
-  setOtp(prev => ({ ...prev, input: val }));
-
-  if (val.length === 6) {
-    try {
-      const result = await window.confirmationResult.confirm(val);
-
-      setOtp(prev => ({
-        ...prev,
-        verified: true
-      }));
-
-      showToast("Phone verified!", "success");
-
-      console.log("User logged in:", result.user);
-
-    } catch (error) {
-      showToast("Incorrect OTP", "error");
-    }
-  }
-};
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
     if (!form.phone || form.phone.length < 10) e.phone = 'Valid phone required';
-    if (!otp.verified) e.otp = 'Please verify your phone number';
     if (!form.college.trim()) e.college = 'College name required';
     if (!form.dept) e.dept = 'Select department';
     if (!form.year) e.year = 'Select year';
@@ -971,30 +853,8 @@ const sendOtp = async () => {
                 {errors.phone && <span className="field-err">{errors.phone}</span>}
               </div>
 
-              {/* OTP input */}
-              {otp.sent && !otp.verified && (
-                <div className="field full otp-field">
-                  <label>Enter OTP *</label>
-                  <div style={{position:'relative'}}>
-                    <input
-                      type="text" placeholder="6-digit OTP"
-                      className={errors.otp?'error':''}
-                      value={otp.input} maxLength={6}
-                      onChange={e=>verifyOtp(e.target.value.replace(/\D/,''))}
-                      style={{paddingRight:'120px'}}
-                    />
-                  </div>
-                  {errors.otp && <span className="field-err">{errors.otp}</span>}
-                </div>
-              )}
-              {otp.verified && (
-                <div className="field full">
-                  <label>Phone Verification</label>
-                  <div style={{display:'flex', alignItems:'center', gap:'8px', color:'#22c55e', fontSize:'0.9rem', fontWeight:600, padding:'12px 0'}}>
-                    <span>✓</span> Phone verified successfully
-                  </div>
-                </div>
-              )}
+              
+              
 
               {/* College */}
               <div className="field full">
