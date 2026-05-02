@@ -613,14 +613,37 @@ function App() {
     setTimeout(scrollToForm, 400);
   };
 
-  
+  /* OTP simulation */
+  let timerRef = useRef(null);
+  const sendOtp = () => {
+    if (!form.phone || form.phone.length < 10) { showToast('Enter a valid 10-digit phone number', 'error'); return; }
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setOtp(o => ({ ...o, sending: true }));
+    setTimeout(() => {
+      setOtp(o => ({ ...o, sent: true, value: code, sending: false, timer: 60 }));
+      showToast(`OTP sent! (Demo OTP: ${code})`, 'info');
+      let t = 60;
+      timerRef.current = setInterval(() => {
+        t--;
+        setOtp(o => ({ ...o, timer: t }));
+        if (t <= 0) clearInterval(timerRef.current);
+      }, 1000);
+    }, 1200);
+  };
 
-  
+  const verifyOtp = (val) => {
+    setOtp(o => ({ ...o, input: val }));
+    if (val.length === 6) {
+      if (val === otp.value) { setOtp(o => ({ ...o, verified: true })); showToast('Phone verified!', 'success'); }
+      else if (val.length === 6) { showToast('Incorrect OTP. Try again.', 'error'); }
+    }
+  };
 
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
     if (!form.phone || form.phone.length < 10) e.phone = 'Valid phone required';
+    if (!otp.verified) e.otp = 'Please verify your phone number';
     if (!form.college.trim()) e.college = 'College name required';
     if (!form.dept) e.dept = 'Select department';
     if (!form.year) e.year = 'Select year';
