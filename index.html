@@ -621,7 +621,7 @@ function App() {
     setOtp(o => ({ ...o, sending: true }));
     setTimeout(() => {
       setOtp(o => ({ ...o, sent: true, value: code, sending: false, timer: 60 }));
-      showToast(`OTP sent! (Demo OTP: ${code})`, 'info');
+      showToast(`OTP sent! (don't share OTP : ${code})`, 'info');
       let t = 60;
       timerRef.current = setInterval(() => {
         t--;
