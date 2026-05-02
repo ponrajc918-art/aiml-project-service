@@ -26,16 +26,14 @@
 
   window.firebaseAuth = auth;
 
-  // 🔥 FIX: wait until page is fully loaded
-  window.onload = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      window.firebaseAuth,
-      "recaptcha-container",
-      {
-        size: "invisible"
-      }
-    );
-  };
+  // ✅ IMPORTANT FIX (NO window.onload)
+  window.recaptchaVerifier = new RecaptchaVerifier(
+    "recaptcha-container",
+    {
+      size: "invisible"
+    },
+    auth
+  );
 </script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -644,7 +642,7 @@ function App() {
     setTimeout(scrollToForm, 400);
   };
 
- import { signInWithPhoneNumber } from "firebase/auth";
+
 
 let timerRef = useRef(null);
 
