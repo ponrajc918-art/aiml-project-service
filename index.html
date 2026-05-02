@@ -24,9 +24,10 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
+  // ✅ STEP 1: expose auth globally
   window.firebaseAuth = auth;
 
-  // ✅ IMPORTANT FIX (NO window.onload)
+  // ✅ STEP 2: create recaptcha HERE (AFTER auth)
   window.recaptchaVerifier = new RecaptchaVerifier(
     "recaptcha-container",
     {
