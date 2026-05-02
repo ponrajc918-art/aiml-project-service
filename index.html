@@ -10,7 +10,8 @@
 <!-- Firebase Setup -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } 
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCS_xJK5uwGVtmXu8PDaQkPM3uUhDnT64",
@@ -24,17 +25,21 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // ✅ STEP 1: expose auth globally
   window.firebaseAuth = auth;
 
-  // ✅ STEP 2: create recaptcha HERE (AFTER auth)
-  window.recaptchaVerifier = new RecaptchaVerifier(
-    "recaptcha-container",
-    {
-      size: "invisible"
-    },
-    auth
-  );
+  // ✅ THIS IS THE CORRECT PLACE
+  window.onload = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha-container",
+      {
+        size: "invisible",
+        callback: () => {
+          console.log("Recaptcha solved");
+        }
+      },
+      auth
+    );
+  };
 </script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
