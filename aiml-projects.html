@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FYP Studio — Final Year AI/ML Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080810;
+    --bg2: #0e0e1a;
+    --card: #11111f;
+    --card2: #161628;
+    --border: rgba(255,255,255,0.07);
+    --blue: #3b6ef5;
+    --blue-light: #5b89ff;
+    --blue-glow: rgba(59,110,245,0.25);
+    --blue-glow2: rgba(59,110,245,0.12);
+    --text: #f0f0f8;
+    --muted: #8888aa;
+    --muted2: #5a5a7a;
+    --success: #22c55e;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+  ::selection { background: rgba(59,110,245,0.3); color: #fff; }
+
+  /* ── GRID BACKGROUND ── */
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(59,110,245,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,110,245,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  /* ── BLUR ORBS ── */
+  .orb {
+    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+    filter: blur(80px); opacity: 0.35;
+  }
+  .orb-1 { width: 500px; height: 500px; background: #1a3aff; top: -150px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: #0066ff; bottom: 10%; right: -80px; }
+  .orb-3 { width: 300px; height: 300px; background: #002eb3; top: 45%; left: 40%; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    background: rgba(8,8,16,0.8);
+    border-bottom: 1px solid var(--border);
+    padding: 0 max(24px, calc(50% - 600px));
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--font-head); font-weight: 800; font-size: 1.15rem;
+    color: #fff; letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--blue); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.88rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    padding: 8px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 600;
+    font-family: var(--font-body); transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--blue-light); transform: translateY(-1px); }
+
+  @media(max-width:640px) { .nav-links { display: none; } }
+
+  /* ── SECTION BASE ── */
+  section { position: relative; z-index: 1; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2);
+    color: var(--blue-light); padding: 6px 14px; border-radius: 100px;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .section-label::before { content:''; width:6px; height:6px; background:var(--blue-light); border-radius:50%; }
+  .section-title {
+    font-family: var(--font-head); font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.1;
+    letter-spacing: -0.03em; color: #fff;
+  }
+  .section-sub { color: var(--muted); font-size: 1.05rem; margin-top: 12px; max-width: 520px; line-height: 1.7; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 120px 0 80px;
+  }
+  .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  @media(max-width:900px) { .hero-inner { grid-template-columns: 1fr; gap: 48px; } }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2);
+    color: var(--blue-light); padding: 7px 16px; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 600; margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge-dot { width:7px; height:7px; background:var(--success); border-radius:50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+
+  .hero-h1 {
+    font-family: var(--font-head); font-weight: 800;
+    font-size: clamp(2.8rem, 6vw, 4.8rem); line-height: 1.0;
+    letter-spacing: -0.04em; color: #fff;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero-h1 .accent {
+    background: linear-gradient(135deg, var(--blue-light), #8aa8ff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    margin-top: 20px; color: var(--muted); font-size: 1.15rem; line-height: 1.7; max-width: 480px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-actions {
+    display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .btn-primary {
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    padding: 14px 28px; border-radius: 10px; font-size: 1rem; font-weight: 600;
+    font-family: var(--font-body); transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+    box-shadow: 0 0 30px var(--blue-glow);
+  }
+  .btn-primary:hover { background: var(--blue-light); transform: translateY(-2px); box-shadow: 0 6px 40px var(--blue-glow); }
+  .btn-secondary {
+    background: transparent; color: var(--text); border: 1px solid var(--border);
+    cursor: pointer; padding: 14px 28px; border-radius: 10px; font-size: 1rem; font-weight: 500;
+    font-family: var(--font-body); transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: rgba(59,110,245,0.4); background: var(--blue-glow2); }
+
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 52px; padding-top: 36px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat-num { font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; color: #fff; }
+  .stat-num span { color: var(--blue-light); }
+  .stat-label { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+
+  /* HERO RIGHT – floating card */
+  .hero-visual {
+    position: relative; animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .hero-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 28px; position: relative; overflow: hidden;
+  }
+  .hero-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  }
+  .hero-card-title { font-family: var(--font-head); font-weight: 700; font-size: 1rem; color: #fff; margin-bottom: 16px; }
+  .code-block {
+    background: #070710; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.8;
+  }
+  .c-kw { color: #7c9aff; }
+  .c-fn { color: #82e0ff; }
+  .c-str { color: #a8d8a8; }
+  .c-cm { color: var(--muted2); }
+  .c-num { color: #ffb347; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .hero-tag {
+    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2);
+    color: var(--blue-light); padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 500;
+  }
+  .floating-chip {
+    position: absolute; background: var(--card2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; font-weight: 500; color: var(--text);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .chip-1 { top: -20px; right: -20px; animation-delay: 0s; }
+  .chip-2 { bottom: -20px; left: -20px; animation-delay: 2s; }
+  .chip-dot { width:8px; height:8px; border-radius:50%; }
+
+  @media(max-width:900px) { .hero-visual { display:none; } }
+
+  /* ── CATEGORIES ── */
+  #categories { padding: 100px 0; }
+  .cards-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+  @media(max-width:900px) { .cards-grid { grid-template-columns: 1fr; } }
+  @media(min-width:640px) and (max-width:900px) { .cards-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .proj-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 32px; position: relative; overflow: hidden; cursor: pointer;
+    transition: all 0.3s ease; display: flex; flex-direction: column;
+  }
+  .proj-card::before {
+    content:''; position:absolute; inset:0; border-radius:20px;
+    background: linear-gradient(135deg, var(--blue-glow2) 0%, transparent 60%);
+    opacity:0; transition: opacity 0.3s;
+  }
+  .proj-card:hover { border-color: rgba(59,110,245,0.35); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .proj-card:hover::before { opacity:1; }
+  .proj-card.selected { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue), 0 20px 60px rgba(0,0,0,0.4); }
+  .proj-card.featured { border-color: rgba(59,110,245,0.3); }
+
+  .featured-badge {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--blue); color: #fff; font-size: 0.7rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .card-icon {
+    width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px; font-size: 1.5rem;
+  }
+  .icon-green { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.2); }
+  .icon-blue { background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2); }
+  .icon-purple { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); }
+
+  .card-tier { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+  .card-name { font-family: var(--font-head); font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .card-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; flex:1; }
+  .card-features { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px; }
+  .card-features li { display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: var(--muted); }
+  .check-icon { width:18px; height:18px; background:rgba(59,110,245,0.15); border:1px solid rgba(59,110,245,0.25); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .check-icon svg { width:10px; height:10px; }
+  .card-btn {
+    width: 100%; padding: 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+    font-family: var(--font-body); cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .card-btn-primary { background: var(--blue); color: #fff; }
+  .card-btn-primary:hover { background: var(--blue-light); }
+  .card-btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .card-btn-outline:hover { border-color: rgba(59,110,245,0.4); background: var(--blue-glow2); color: #fff; }
+
+  /* ── DEMOS ── */
+  #demos { padding: 100px 0; }
+  .demos-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+  @media(max-width:900px) { .demos-grid { grid-template-columns:1fr; } }
+  @media(min-width:640px) and (max-width:900px) { .demos-grid { grid-template-columns:repeat(2,1fr); } }
+
+  .demo-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    overflow: hidden; transition: all 0.3s;
+  }
+  .demo-card:hover { transform: translateY(-4px); border-color: rgba(59,110,245,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .demo-preview {
+    height: 200px; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .demo-bg {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .demo-mockup {
+    width: 90%; height: 85%; background: var(--bg2); border-radius: 8px;
+    border: 1px solid var(--border); overflow: hidden; position: relative;
+  }
+  .demo-bar { height: 24px; background: var(--card2); border-bottom: 1px solid var(--border); display:flex; align-items:center; padding: 0 10px; gap:6px; }
+  .demo-dot { width:7px; height:7px; border-radius:50%; }
+  .demo-content { padding: 12px; }
+  .demo-chart-line { height:3px; border-radius:2px; margin:6px 0; }
+  .demo-chart-bars { display:flex; align-items:flex-end; gap:4px; height:50px; margin-top:10px; }
+  .demo-bar-item { flex:1; border-radius:3px 3px 0 0; min-height:8px; }
+
+  .demo-info { padding: 24px; }
+  .demo-tag {
+    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2);
+    color: var(--blue-light); padding: 3px 10px; border-radius: 100px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; display:inline-block; margin-bottom:12px;
+  }
+  .demo-title { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .demo-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 16px; }
+  .demo-links { display: flex; gap: 10px; }
+  .demo-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.82rem; font-weight: 600; text-decoration: none;
+    padding: 7px 14px; border-radius: 8px; transition: all 0.2s; cursor: pointer; border: none;
+    font-family: var(--font-body);
+  }
+  .demo-link-github { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
+  .demo-link-github:hover { border-color: rgba(59,110,245,0.3); color:#fff; }
+  .demo-link-live { background: var(--blue); color: #fff; }
+  .demo-link-live:hover { background: var(--blue-light); }
+
+  /* ── FORM ── */
+  #form-section { padding: 100px 0; }
+  .form-wrapper {
+    max-width: 640px; margin: 0 auto; margin-top: 56px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 48px;
+    position: relative; overflow: hidden;
+  }
+  .form-wrapper::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  }
+  @media(max-width:640px) { .form-wrapper { padding: 28px 20px; } }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:540px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 0.82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .field input, .field select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: 13px 16px; border-radius: 10px; font-size: 0.95rem; font-family: var(--font-body);
+    transition: all 0.2s; outline: none; width: 100%; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow2); }
+  .field input::placeholder { color: var(--muted2); }
+  .field select option { background: #0e0e1a; }
+
+  .field input.error { border-color: #ef4444; }
+  .field-err { color: #ef4444; font-size: 0.78rem; margin-top: 2px; }
+
+  .phone-row { display: flex; gap: 10px; }
+  .phone-row input { flex: 1; }
+  .otp-btn {
+    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.3); color: var(--blue-light);
+    padding: 0 16px; border-radius: 10px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: var(--font-body); transition: all 0.2s; white-space: nowrap;
+  }
+  .otp-btn:hover { background: rgba(59,110,245,0.2); }
+  .otp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .otp-field { position: relative; }
+  .otp-verified { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--success); display: flex; align-items: center; gap: 4px; font-size: 0.8rem; font-weight: 600; }
+
+  .selected-type {
+    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2);
+    padding: 12px 16px; border-radius: 10px; color: var(--blue-light); font-weight: 600; font-size: 0.95rem;
+  }
+
+  .submit-btn {
+    width: 100%; margin-top: 28px; padding: 15px; border-radius: 12px;
+    background: var(--blue); color: #fff; font-size: 1rem; font-weight: 700;
+    font-family: var(--font-head); border: none; cursor: pointer; transition: all 0.25s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 0 30px var(--blue-glow);
+  }
+  .submit-btn:hover { background: var(--blue-light); transform: translateY(-2px); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* ── SUCCESS ── */
+  .success-overlay {
+    position: fixed; inset: 0; z-index: 200; background: rgba(8,8,16,0.95);
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(20px);
+    animation: fadeIn 0.3s ease;
+  }
+  .success-box {
+    text-align: center; padding: 60px 40px; max-width: 440px;
+    animation: scaleIn 0.4s 0.1s ease both;
+  }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%; background: rgba(34,197,94,0.15);
+    border: 2px solid rgba(34,197,94,0.3); display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px; font-size: 2rem;
+  }
+  .success-box h2 { font-family: var(--font-head); font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
+  .success-box p { color: var(--muted); line-height: 1.7; }
+  .redirect-bar { margin-top: 28px; background: var(--card2); border-radius: 8px; overflow: hidden; height: 4px; }
+  .redirect-fill { height: 100%; background: var(--blue); animation: fill 3s linear forwards; }
+  @keyframes fill { from{width:0%} to{width:100%} }
+
+  /* ── STICKY CTA ── */
+  .sticky-cta {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 50; display: none;
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    padding: 14px 32px; border-radius: 100px; font-size: 0.95rem; font-weight: 700;
+    font-family: var(--font-body); box-shadow: 0 8px 30px var(--blue-glow);
+    animation: slideUp 0.5s ease both; white-space: nowrap;
+  }
+  @media(max-width:640px) { .sticky-cta { display: block; } }
+  @keyframes slideUp { from{transform:translateX(-50%) translateY(80px)} to{transform:translateX(-50%) translateY(0)} }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1; border-top: 1px solid var(--border);
+    padding: 40px 24px; text-align: center; color: var(--muted2); font-size: 0.85rem;
+  }
+  footer a { color: var(--blue-light); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes scaleIn { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
+
+  .animate-up {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .animate-up.visible { opacity: 1; transform: translateY(0); }
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: var(--card2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 22px; font-size: 0.88rem; font-weight: 500; z-index: 300;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    animation: toastIn 0.3s ease;
+    max-width: 320px; text-align: center;
+  }
+  @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+  .toast.success-toast { border-color: rgba(34,197,94,0.3); color: var(--success); }
+  .toast.error-toast { border-color: rgba(239,68,68,0.3); color: #ef4444; }
+  .toast.info-toast { border-color: rgba(59,110,245,0.3); color: var(--blue-light); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ─── SVG ICONS ─── */
+const IconCheck = () => (
+  <svg viewBox="0 0 12 12" fill="none" stroke="#3b6ef5" strokeWidth="2" strokeLinecap="round">
+    <polyline points="2,6 5,9 10,3"/>
+  </svg>
+);
+const IconArrow = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const IconGithub = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.014-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+  </svg>
+);
+const IconExternal = () => (
+  <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+    <path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M10 2h4v4M14 2L8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const IconWhatsApp = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+);
+const IconSend = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <polygon points="22,2 15,22 11,13 2,9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  </svg>
+);
+
+/* ─── TOAST ─── */
+function Toast({ message, type, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 3000);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className={`toast ${type}-toast`}>
+      <span>{type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+      {message}
+    </div>
+  );
+}
+
+/* ─── HERO VISUAL ─── */
+function HeroVisual() {
+  return (
+    <div className="hero-visual">
+      <div style={{position:'relative'}}>
+        <div className="floating-chip chip-1">
+          <div className="chip-dot" style={{background:'#22c55e'}}></div>
+          Model Accuracy: 94.2%
+        </div>
+        <div className="hero-card">
+          <div className="hero-card-title">disease_predictor.py</div>
+          <div className="code-block">
+            <div><span className="c-kw">import</span> sklearn <span className="c-kw">as</span> sk</div>
+            <div><span className="c-kw">from</span> tensorflow <span className="c-kw">import</span> <span className="c-fn">keras</span></div>
+            <div>&nbsp;</div>
+            <div><span className="c-cm"># Train classification model</span></div>
+            <div><span className="c-fn">model</span> = keras.<span className="c-fn">Sequential</span>([</div>
+            <div>&nbsp;&nbsp;Dense(<span className="c-num">128</span>, activation=<span className="c-str">'relu'</span>),</div>
+            <div>&nbsp;&nbsp;Dropout(<span className="c-num">0.3</span>),</div>
+            <div>&nbsp;&nbsp;Dense(<span className="c-num">1</span>, activation=<span className="c-str">'sigmoid'</span>)</div>
+            <div>])</div>
+            <div>&nbsp;</div>
+            <div>accuracy = <span className="c-num">0.942</span> <span className="c-cm">✓</span></div>
+          </div>
+          <div className="hero-tags">
+            <span className="hero-tag">TensorFlow</span>
+            <span className="hero-tag">scikit-learn</span>
+            <span className="hero-tag">Flask API</span>
+            <span className="hero-tag">React UI</span>
+          </div>
+        </div>
+        <div className="floating-chip chip-2">
+          <div className="chip-dot" style={{background:'var(--blue-light)'}}></div>
+          Delivered in 3 days
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── DEMO MOCKUP ─── */
+function DemoMockup({ colors }) {
+  return (
+    <div className="demo-mockup">
+      <div className="demo-bar">
+        <div className="demo-dot" style={{background:'#ef4444'}}></div>
+        <div className="demo-dot" style={{background:'#f59e0b'}}></div>
+        <div className="demo-dot" style={{background:'#22c55e'}}></div>
+      </div>
+      <div className="demo-content">
+        <div className="demo-chart-line" style={{width:'60%', background:colors[0]+'33'}}></div>
+        <div className="demo-chart-line" style={{width:'90%', background:colors[1]+'33'}}></div>
+        <div className="demo-chart-bars">
+          {[40,65,35,80,55,90,45,70,60,85].map((h, i) => (
+            <div key={i} className="demo-bar-item" style={{height:`${h}%`, background:`${colors[i%colors.length]}55`}}></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── USE INTERSECTION OBSERVER ─── */
+function useReveal(ref) {
+  useEffect(() => {
+    if (!ref.current) return;
+    const els = ref.current.querySelectorAll('.animate-up');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    els.forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+}
+
+/* ─── MAIN APP ─── */
+function App() {
+  const [selected, setSelected] = useState('');
+  const [toast, setToast] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [otp, setOtp] = useState({ sent: false, value: '', input: '', verified: false, sending: false, timer: 0 });
+  const [form, setForm] = useState({ name:'', phone:'', college:'', dept:'', year:'' });
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
+  const formRef = useRef(null);
+  const heroRef = useRef(null);
+  const catRef = useRef(null);
+  const demoRef = useRef(null);
+  const formSectionRef = useRef(null);
+
+  useReveal(catRef);
+  useReveal(demoRef);
+  useReveal(formSectionRef);
+
+  const showToast = (message, type='info') => {
+    setToast({ message, type, id: Date.now() });
+  };
+
+  const scrollToForm = () => {
+    document.getElementById('form-section')?.scrollIntoView({ behavior:'smooth', block:'start' });
+  };
+
+  const handleSelect = (tier) => {
+    setSelected(tier);
+    showToast(`${tier} project selected!`, 'success');
+    setTimeout(scrollToForm, 400);
+  };
+
+  /* OTP simulation */
+  let timerRef = useRef(null);
+  const sendOtp = () => {
+    if (!form.phone || form.phone.length < 10) { showToast('Enter a valid 10-digit phone number', 'error'); return; }
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setOtp(o => ({ ...o, sending: true }));
+    setTimeout(() => {
+      setOtp(o => ({ ...o, sent: true, value: code, sending: false, timer: 60 }));
+      showToast(`OTP sent! (Demo OTP: ${code})`, 'info');
+      let t = 60;
+      timerRef.current = setInterval(() => {
+        t--;
+        setOtp(o => ({ ...o, timer: t }));
+        if (t <= 0) clearInterval(timerRef.current);
+      }, 1000);
+    }, 1200);
+  };
+
+  const verifyOtp = (val) => {
+    setOtp(o => ({ ...o, input: val }));
+    if (val.length === 6) {
+      if (val === otp.value) { setOtp(o => ({ ...o, verified: true })); showToast('Phone verified!', 'success'); }
+      else if (val.length === 6) { showToast('Incorrect OTP. Try again.', 'error'); }
+    }
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = 'Name is required';
+    if (!form.phone || form.phone.length < 10) e.phone = 'Valid phone required';
+    if (!otp.verified) e.otp = 'Please verify your phone number';
+    if (!form.college.trim()) e.college = 'College name required';
+    if (!form.dept) e.dept = 'Select department';
+    if (!form.year) e.year = 'Select year';
+    if (!selected) e.type = 'Please select a project type above';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) { showToast('Please fill all required fields', 'error'); return; }
+    setSubmitting(true);
+    setTimeout(() => {
+      setShowSuccess(true);
+      const msg = `Hi, I'm ${form.name} from ${form.college}, ${form.dept}, ${form.year} year. I need a ${selected} AI/ML project. Please guide me on the next steps.`;
+      const encoded = encodeURIComponent(msg);
+      setTimeout(() => {
+        window.open(`https://wa.me/919677690323?text=${encoded}`, '_blank');
+        setShowSuccess(false);
+        setSubmitting(false);
+      }, 3000);
+    }, 800);
+  };
+
+  const categories = [
+    {
+      id: 'Starter', tier: 'Starter', name: 'Simple ML Project', icon: '🌱',
+      iconClass: 'icon-green',
+      desc: 'Perfect for basic requirements. A clean machine learning project with proper documentation.',
+      features: ['Simple ML Model (classification/regression)', 'Curated Dataset included', 'Full Source Code', 'Basic Project Report'],
+      btnClass: 'card-btn-outline',
+    },
+    {
+      id: 'Intermediate', tier: 'Intermediate', name: 'ML + API Integration', icon: '⚡',
+      iconClass: 'icon-blue', featured: true,
+      desc: 'Most popular choice. Includes a working API and basic frontend interface.',
+      features: ['ML Model + REST API (Flask/FastAPI)', 'Basic React/HTML Frontend UI', 'API Documentation', 'Detailed Project Report'],
+      btnClass: 'card-btn-primary',
+    },
+    {
+      id: 'Advanced', tier: 'Advanced', name: 'Full AI System', icon: '🚀',
+      iconClass: 'icon-purple',
+      desc: 'Complete end-to-end system with dashboard, database, and comprehensive documentation.',
+      features: ['ML + API + Interactive Dashboard', 'Database Integration (SQL/NoSQL)', 'Full Deployment Ready', 'Detailed Research Report'],
+      btnClass: 'card-btn-outline',
+    }
+  ];
+
+  const demos = [
+    {
+      tag: 'Healthcare AI', title: 'Disease Prediction System',
+      desc: 'ML model predicting disease probability from patient symptoms using Random Forest with 94% accuracy.',
+      github: '#', colors: ['#3b6ef5','#5b89ff'],
+    },
+    {
+      tag: 'NLP', title: 'Sentiment Analysis Dashboard',
+      desc: 'Real-time Twitter/product review sentiment analysis with BERT model and interactive visualization.',
+      github: '#', colors: ['#22c55e','#4ade80'],
+    },
+    {
+      tag: 'Computer Vision', title: 'Object Detection App',
+      desc: 'YOLOv8-based real-time object detection with live camera feed and REST API endpoint.',
+      github: '#', colors: ['#a855f7','#c084fc'],
+    }
+  ];
+
+  const depts = ['Computer Science','Information Technology','Electronics & Communication','Electrical','Mechanical','Civil','Data Science','AI & ML','Other'];
+
+  return (
+    <>
+      {/* ─── NAV ─── */}
+      <nav>
+        <div className="nav-logo">FYP<span>Studio</span></div>
+        <div className="nav-links">
+          <a href="#categories" onClick={e=>{e.preventDefault();document.getElementById('categories').scrollIntoView({behavior:'smooth'})}}>Projects</a>
+          <a href="#demos" onClick={e=>{e.preventDefault();document.getElementById('demos').scrollIntoView({behavior:'smooth'})}}>Demo</a>
+          <a href="#form-section" onClick={e=>{e.preventDefault();scrollToForm()}}>Contact</a>
+        </div>
+        <button className="nav-cta" onClick={scrollToForm}>Get Your Project</button>
+      </nav>
+
+      {/* ─── HERO ─── */}
+      <section id="hero" ref={heroRef}>
+        <div className="container">
+          <div className="hero-inner">
+            <div>
+              <div className="hero-badge">
+                <div className="hero-badge-dot"></div>
+                Available for 2024–25 batch
+              </div>
+              <h1 className="hero-h1">
+                Final Year<br/>
+                <span className="accent">Project Help</span>
+              </h1>
+              <p className="hero-sub">Build real AI/ML projects based on your deadline. From concept to deployment — delivered clean, documented, and presentation-ready.</p>
+              <div className="hero-actions">
+                <button className="btn-primary" onClick={scrollToForm}>
+                  Get Your Project <IconArrow/>
+                </button>
+                <button className="btn-secondary" onClick={()=>document.getElementById('demos').scrollIntoView({behavior:'smooth'})}>
+                  View Demos
+                </button>
+              </div>
+              <div className="hero-stats">
+                <div>
+                  <div className="stat-num">120<span>+</span></div>
+                  <div className="stat-label">Projects Delivered</div>
+                </div>
+                <div>
+                  <div className="stat-num">3<span>–7</span></div>
+                  <div className="stat-label">Days Delivery</div>
+                </div>
+                <div>
+                  <div className="stat-num">98<span>%</span></div>
+                  <div className="stat-label">Satisfaction Rate</div>
+                </div>
+              </div>
+            </div>
+            <HeroVisual/>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CATEGORIES ─── */}
+      <section id="categories" ref={catRef}>
+        <div className="container">
+          <div className="animate-up">
+            <div className="section-label">Project Types</div>
+            <h2 className="section-title">Choose Your Level</h2>
+            <p className="section-sub">Every project comes with source code, documentation, and support for your viva presentation.</p>
+          </div>
+          <div className="cards-grid">
+            {categories.map((c, i) => (
+              <div key={c.id} className={`proj-card animate-up delay-${i+1} ${selected===c.id?'selected':''} ${c.featured?'featured':''}`} onClick={()=>handleSelect(c.id)}>
+                {c.featured && <div className="featured-badge">Popular</div>}
+                <div className={`card-icon ${c.iconClass}`} style={{fontSize:'1.5rem'}}>{c.icon}</div>
+                <div className="card-tier">{c.tier}</div>
+                <div className="card-name">{c.name}</div>
+                <p className="card-desc">{c.desc}</p>
+                <ul className="card-features">
+                  {c.features.map(f => (
+                    <li key={f}>
+                      <div className="check-icon"><IconCheck/></div>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button className={`card-btn ${selected===c.id?'card-btn-primary':c.btnClass}`}>
+                  {selected===c.id ? '✓ Selected' : 'Select This Plan'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── DEMOS ─── */}
+      <section id="demos" ref={demoRef}>
+        <div className="container">
+          <div className="animate-up">
+            <div className="section-label">Sample Work</div>
+            <h2 className="section-title">Demo Projects</h2>
+            <p className="section-sub">Real projects built for students. Each one is unique, documented, and ready for submission.</p>
+          </div>
+          <div className="demos-grid">
+            {demos.map((d, i) => (
+              <div key={d.title} className={`demo-card animate-up delay-${i+1}`}>
+                <div className="demo-preview">
+                  <div className="demo-bg" style={{background:`linear-gradient(135deg, ${d.colors[0]}15, ${d.colors[1]}08)`}}>
+                    <DemoMockup colors={d.colors}/>
+                  </div>
+                </div>
+                <div className="demo-info">
+                  <div className="demo-tag">{d.tag}</div>
+                  <div className="demo-title">{d.title}</div>
+                  <p className="demo-desc">{d.desc}</p>
+                  <div className="demo-links">
+                    <a className="demo-link demo-link-github" href={d.github} target="_blank">
+                      <IconGithub/> GitHub
+                    </a>
+                    <button className="demo-link demo-link-live" onClick={scrollToForm}>
+                      Get Similar <IconArrow/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FORM ─── */}
+      <section id="form-section" ref={formSectionRef}>
+        <div className="container">
+          <div className="animate-up" style={{textAlign:'center'}}>
+            <div className="section-label" style={{margin:'0 auto 20px'}}>Get Started</div>
+            <h2 className="section-title">Tell Us About Your Project</h2>
+            <p className="section-sub" style={{margin:'12px auto 0'}}>Fill in your details and we'll reach out on WhatsApp with next steps.</p>
+          </div>
+          <div className="form-wrapper animate-up delay-1" ref={formRef}>
+            <div className="form-grid">
+              {/* Name */}
+              <div className="field full">
+                <label>Full Name *</label>
+                <input
+                  type="text" placeholder="e.g. Rahul Kumar"
+                  className={errors.name?'error':''}
+                  value={form.name}
+                  onChange={e=>setForm(f=>({...f,name:e.target.value}))}
+                />
+                {errors.name && <span className="field-err">{errors.name}</span>}
+              </div>
+
+              {/* Phone */}
+              <div className="field full">
+                <label>Phone Number *</label>
+                <div className="phone-row">
+                  <input
+                    type="tel" placeholder="10-digit mobile number"
+                    className={errors.phone?'error':''}
+                    value={form.phone} maxLength={10}
+                    onChange={e=>setForm(f=>({...f,phone:e.target.value.replace(/\D/,'')}))}
+                    disabled={otp.verified}
+                  />
+                  {!otp.verified && (
+                    <button className="otp-btn" onClick={sendOtp} disabled={otp.sending || (otp.timer>0)}>
+                      {otp.sending ? 'Sending…' : otp.timer>0 ? `Resend (${otp.timer}s)` : otp.sent ? 'Resend OTP' : 'Send OTP'}
+                    </button>
+                  )}
+                </div>
+                {errors.phone && <span className="field-err">{errors.phone}</span>}
+              </div>
+
+              {/* OTP input */}
+              {otp.sent && !otp.verified && (
+                <div className="field full otp-field">
+                  <label>Enter OTP *</label>
+                  <div style={{position:'relative'}}>
+                    <input
+                      type="text" placeholder="6-digit OTP"
+                      className={errors.otp?'error':''}
+                      value={otp.input} maxLength={6}
+                      onChange={e=>verifyOtp(e.target.value.replace(/\D/,''))}
+                      style={{paddingRight:'120px'}}
+                    />
+                  </div>
+                  {errors.otp && <span className="field-err">{errors.otp}</span>}
+                </div>
+              )}
+              {otp.verified && (
+                <div className="field full">
+                  <label>Phone Verification</label>
+                  <div style={{display:'flex', alignItems:'center', gap:'8px', color:'#22c55e', fontSize:'0.9rem', fontWeight:600, padding:'12px 0'}}>
+                    <span>✓</span> Phone verified successfully
+                  </div>
+                </div>
+              )}
+
+              {/* College */}
+              <div className="field full">
+                <label>College Name *</label>
+                <input
+                  type="text" placeholder="e.g. Anna University, Chennai"
+                  className={errors.college?'error':''}
+                  value={form.college}
+                  onChange={e=>setForm(f=>({...f,college:e.target.value}))}
+                />
+                {errors.college && <span className="field-err">{errors.college}</span>}
+              </div>
+
+              {/* Dept */}
+              <div className="field">
+                <label>Department *</label>
+                <select
+                  className={errors.dept?'error':''}
+                  value={form.dept}
+                  onChange={e=>setForm(f=>({...f,dept:e.target.value}))}
+                >
+                  <option value="">Select department</option>
+                  {depts.map(d=><option key={d}>{d}</option>)}
+                </select>
+                {errors.dept && <span className="field-err">{errors.dept}</span>}
+              </div>
+
+              {/* Year */}
+              <div className="field">
+                <label>Year of Study *</label>
+                <select
+                  className={errors.year?'error':''}
+                  value={form.year}
+                  onChange={e=>setForm(f=>({...f,year:e.target.value}))}
+                >
+                  <option value="">Select year</option>
+                  <option value="1st">1st Year</option>
+                  <option value="2nd">2nd Year</option>
+                  <option value="3rd">3rd Year</option>
+                  <option value="4th">4th Year (Final Year)</option>
+                </select>
+                {errors.year && <span className="field-err">{errors.year}</span>}
+              </div>
+
+              {/* Project Type */}
+              <div className="field full">
+                <label>Selected Project Type</label>
+                {selected
+                  ? <div className="selected-type">✓ {selected} — AI/ML Project</div>
+                  : <div style={{color:'var(--muted2)', fontSize:'0.9rem', padding:'12px 0'}}>
+                      No project selected. <a href="#categories" style={{color:'var(--blue-light)', textDecoration:'none'}} onClick={e=>{e.preventDefault(); document.getElementById('categories').scrollIntoView({behavior:'smooth'})}}>Pick one above ↑</a>
+                    </div>
+                }
+                {errors.type && <span className="field-err">{errors.type}</span>}
+              </div>
+            </div>
+
+            <button className="submit-btn" onClick={handleSubmit} disabled={submitting}>
+              {submitting ? (
+                <><span style={{animation:'spin 1s linear infinite', display:'inline-block'}}>⟳</span> Processing…</>
+              ) : (
+                <><IconWhatsApp/> Send via WhatsApp</>
+              )}
+            </button>
+
+            <p style={{textAlign:'center', color:'var(--muted2)', fontSize:'0.8rem', marginTop:'16px', lineHeight:'1.6'}}>
+              By submitting, you agree to be contacted via WhatsApp. Your data is safe with us.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FOOTER ─── */}
+      <footer>
+        <p>© 2025 <strong style={{color:'var(--text)'}}>FYPStudio</strong>. Built for students. Reach us on <a href="https://wa.me/919677690323">WhatsApp</a>.</p>
+      </footer>
+
+      {/* ─── STICKY CTA ─── */}
+      <button className="sticky-cta" onClick={scrollToForm}>
+        Get Your Project →
+      </button>
+
+      {/* ─── SUCCESS OVERLAY ─── */}
+      {showSuccess && (
+        <div className="success-overlay">
+          <div className="success-box">
+            <div className="success-icon">✓</div>
+            <h2>You're all set!</h2>
+            <p>Redirecting you to WhatsApp to complete your project request. We'll get back to you within a few hours.</p>
+            <div className="redirect-bar"><div className="redirect-fill"></div></div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── TOAST ─── */}
+      {toast && <Toast key={toast.id} message={toast.message} type={toast.type} onDone={()=>setToast(null)}/>}
+
+      <style>{`
+        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        #categories { scroll-margin-top: 80px; }
+        #demos { scroll-margin-top: 80px; }
+        #form-section { scroll-margin-top: 80px; }
+      `}</style>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
