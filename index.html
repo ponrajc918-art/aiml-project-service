@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
-
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -448,7 +447,6 @@
 </style>
 </head>
 <body>
-
 <div class="grid-bg"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
@@ -615,7 +613,9 @@ function App() {
     setTimeout(scrollToForm, 400);
   };
 
+  
 
+  
 
   const validate = () => {
     const e = {};
@@ -853,8 +853,30 @@ function App() {
                 {errors.phone && <span className="field-err">{errors.phone}</span>}
               </div>
 
-              
-              
+              {/* OTP input */}
+              {otp.sent && !otp.verified && (
+                <div className="field full otp-field">
+                  <label>Enter OTP *</label>
+                  <div style={{position:'relative'}}>
+                    <input
+                      type="text" placeholder="6-digit OTP"
+                      className={errors.otp?'error':''}
+                      value={otp.input} maxLength={6}
+                      onChange={e=>verifyOtp(e.target.value.replace(/\D/,''))}
+                      style={{paddingRight:'120px'}}
+                    />
+                  </div>
+                  {errors.otp && <span className="field-err">{errors.otp}</span>}
+                </div>
+              )}
+              {otp.verified && (
+                <div className="field full">
+                  <label>Phone Verification</label>
+                  <div style={{display:'flex', alignItems:'center', gap:'8px', color:'#22c55e', fontSize:'0.9rem', fontWeight:600, padding:'12px 0'}}>
+                    <span>✓</span> Phone verified successfully
+                  </div>
+                </div>
+              )}
 
               {/* College */}
               <div className="field full">
