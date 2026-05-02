@@ -10,10 +10,10 @@
 <!-- Firebase Setup -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyCS_xJK5uwGVtmXu8PDaQkPM3uUhDnTj64",
+    apiKey: "AIzaSyCS_xJK5uwGVtmXu8PDaQkPM3uUhDnT64",
     authDomain: "aiml-pro-service.firebaseapp.com",
     projectId: "aiml-pro-service",
     storageBucket: "aiml-pro-service.appspot.com",
@@ -23,17 +23,19 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  
+
   window.firebaseAuth = auth;
-  
-  // 🔥 ADD THIS HERE
-  window.recaptchaVerifier = new RecaptchaVerifier(
-    window.firebaseAuth,
-    "recaptcha-container",
-    {
-      size: "invisible"
-    }
-  );
+
+  // 🔥 FIX: wait until page is fully loaded
+  window.onload = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      window.firebaseAuth,
+      "recaptcha-container",
+      {
+        size: "invisible"
+      }
+    );
+  };
 </script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
