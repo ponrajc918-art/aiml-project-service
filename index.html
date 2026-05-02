@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
-<!-- Firebase Setup -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } 
@@ -27,19 +26,26 @@
 
   window.firebaseAuth = auth;
 
-  // ✅ THIS IS THE CORRECT PLACE
-  window.onload = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha-container",
-      {
-        size: "invisible",
-        callback: () => {
-          console.log("Recaptcha solved");
-        }
-      },
-      auth
-    );
-  };
+  function initRecaptcha() {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: () => {
+            console.log("Recaptcha solved");
+          }
+        },
+        auth
+      );
+    }
+  }
+
+  if (document.readyState === "complete") {
+    initRecaptcha();
+  } else {
+    window.addEventListener("load", initRecaptcha);
+  }
 </script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
