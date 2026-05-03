@@ -584,7 +584,6 @@ function App() {
   const [selected, setSelected] = useState('');
   const [toast, setToast] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [otp, setOtp] = useState({ sent: false, value: '', input: '', verified: false, sending: false, timer: 0 });
   const [form, setForm] = useState({ name:'', phone:'', college:'', dept:'', year:'' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -614,36 +613,15 @@ function App() {
   };
 
   /* OTP simulation */
-  let timerRef = useRef(null);
-  const sendOtp = () => {
-    if (!form.phone || form.phone.length < 10) { showToast('Enter a valid 10-digit phone number', 'error'); return; }
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    setOtp(o => ({ ...o, sending: true }));
-    setTimeout(() => {
-      setOtp(o => ({ ...o, sent: true, value: code, sending: false, timer: 60 }));
-      showToast(`OTP sent! (don't share OTP : ${code})`, 'info');
-      let t = 60;
-      timerRef.current = setInterval(() => {
-        t--;
-        setOtp(o => ({ ...o, timer: t }));
-        if (t <= 0) clearInterval(timerRef.current);
-      }, 1000);
-    }, 1200);
-  };
 
-  const verifyOtp = (val) => {
-    setOtp(o => ({ ...o, input: val }));
-    if (val.length === 6) {
-      if (val === otp.value) { setOtp(o => ({ ...o, verified: true })); showToast('Phone verified!', 'success'); }
-      else if (val.length === 6) { showToast('Incorrect OTP. Try again.', 'error'); }
-    }
-  };
+
+ 
 
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
     if (!form.phone || form.phone.length < 10) e.phone = 'Valid phone required';
-    if (!otp.verified) e.otp = 'Please verify your phone number';
+    
     if (!form.college.trim()) e.college = 'College name required';
     if (!form.dept) e.dept = 'Select department';
     if (!form.year) e.year = 'Select year';
@@ -865,7 +843,7 @@ function App() {
                     className={errors.phone?'error':''}
                     value={form.phone} maxLength={10}
                     onChange={e=>setForm(f=>({...f,phone:e.target.value.replace(/\D/,'')}))}
-                    disabled={otp.verified}
+                    
                   />
                   {!otp.verified && (
                     <button className="otp-btn" onClick={sendOtp} disabled={otp.sending || (otp.timer>0)}>
@@ -876,30 +854,7 @@ function App() {
                 {errors.phone && <span className="field-err">{errors.phone}</span>}
               </div>
 
-              {/* OTP input */}
-              {otp.sent && !otp.verified && (
-                <div className="field full otp-field">
-                  <label>Enter OTP *</label>
-                  <div style={{position:'relative'}}>
-                    <input
-                      type="text" placeholder="6-digit OTP"
-                      className={errors.otp?'error':''}
-                      value={otp.input} maxLength={6}
-                      onChange={e=>verifyOtp(e.target.value.replace(/\D/,''))}
-                      style={{paddingRight:'120px'}}
-                    />
-                  </div>
-                  {errors.otp && <span className="field-err">{errors.otp}</span>}
-                </div>
-              )}
-              {otp.verified && (
-                <div className="field full">
-                  <label>Phone Verification</label>
-                  <div style={{display:'flex', alignItems:'center', gap:'8px', color:'#22c55e', fontSize:'0.9rem', fontWeight:600, padding:'12px 0'}}>
-                    <span>✓</span> Phone verified successfully
-                  </div>
-                </div>
-              )}
+
 
               {/* College */}
               <div className="field full">
