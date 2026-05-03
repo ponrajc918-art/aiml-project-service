@@ -349,16 +349,7 @@
 
   .phone-row { display: flex; gap: 10px; }
   .phone-row input { flex: 1; }
-  .otp-btn {
-    background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.3); color: var(--blue-light);
-    padding: 0 16px; border-radius: 10px; font-size: 0.82rem; font-weight: 600;
-    cursor: pointer; font-family: var(--font-body); transition: all 0.2s; white-space: nowrap;
-  }
-  .otp-btn:hover { background: rgba(59,110,245,0.2); }
-  .otp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .otp-field { position: relative; }
-  .otp-verified { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--success); display: flex; align-items: center; gap: 4px; font-size: 0.8rem; font-weight: 600; }
+  
 
   .selected-type {
     background: var(--blue-glow2); border: 1px solid rgba(59,110,245,0.2);
@@ -837,20 +828,19 @@ function App() {
               {/* Phone */}
               <div className="field full">
                 <label>Phone Number *</label>
-                <div className="phone-row">
-                  <input
-                    type="tel" placeholder="10-digit mobile number"
-                    className={errors.phone?'error':''}
-                    value={form.phone} maxLength={10}
-                    onChange={e=>setForm(f=>({...f,phone:e.target.value.replace(/\D/,'')}))}
-                    
-                  />
-                  {!otp.verified && (
-                    <button className="otp-btn" onClick={sendOtp} disabled={otp.sending || (otp.timer>0)}>
-                      {otp.sending ? 'Sending…' : otp.timer>0 ? `Resend (${otp.timer}s)` : otp.sent ? 'Resend OTP' : 'Send OTP'}
-                    </button>
-                  )}
-                </div>
+                <input
+                  type="tel"
+                  placeholder="10-digit mobile number"
+                  className={errors.phone ? 'error' : ''}
+                  value={form.phone}
+                  maxLength={10}
+                  onChange={e =>
+                    setForm(f => ({
+                      ...f,
+                      phone: e.target.value.replace(/\D/g, '')
+                    }))
+                  }
+                />
                 {errors.phone && <span className="field-err">{errors.phone}</span>}
               </div>
 
