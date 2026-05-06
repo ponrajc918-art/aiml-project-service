@@ -56,6 +56,31 @@ student project help India
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
+ .about-section {
+  padding: 80px 20px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.about-grid h3 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.about-grid p,
+.about-grid li {
+  color: #aaa;
+  line-height: 1.7;
+}
+
+.about-grid ul {
+  padding-left: 18px;
+}
  .seo-hidden {
   position: absolute;
   left: -9999px;
@@ -761,32 +786,7 @@ function App() {
         </div>
         <button className="nav-cta" onClick={scrollToForm}>Get Your Project</button>
       </nav>
-      <section style="padding:60px 24px; max-width:1000px; margin:auto; color:#ccc;">
-         <h2 style="color:white; font-size:28px; margin-bottom:15px;">
-           AI ML Project Service for Final Year Students
-         </h2>
-       
-         <p style="margin-bottom:15px; line-height:1.7;">
-           We provide complete AI ML final year projects for engineering students including machine learning models,
-           deep learning systems, Flask APIs, and React dashboards. All projects include source code,
-           documentation, and deployment support.
-         </p>
-       
-         <h3 style="color:white; margin-top:25px;">Our AI ML Project Services</h3>
-         <ul style="margin-top:10px; line-height:1.8;">
-           <li>Final Year AI Projects with source code</li>
-           <li>Machine Learning Projects with report</li>
-           <li>Deep Learning and NLP systems</li>
-           <li>End-to-End AI systems with frontend + backend</li>
-         </ul>
-       
-         <h3 style="color:white; margin-top:25px;">Why Choose Our Projects?</h3>
-         <p style="margin-top:10px; line-height:1.7;">
-           Our projects are designed for real-world applications and academic success. Each project is
-           built with proper architecture, clean code, and presentation-ready documentation, helping
-           students achieve better understanding and higher grades.
-         </p>
-       </section>
+      
 
 
       {/* ─── HERO ─── */}
@@ -830,6 +830,45 @@ function App() {
           </div>
         </div>
       </section>
+      </section>   // ← HERO ends here
+
+{/* ─── ADD HERE ─── */}
+<section id="about-service" className="about-section">
+  <div className="container">
+    <div className="animate-up">
+      
+      <h2 className="section-title">
+        AI ML Project Service for Final Year Students
+      </h2>
+
+      <p className="section-sub">
+        We provide complete AI ML final year projects for engineering students including 
+        machine learning models, deep learning systems, Flask APIs, and React dashboards.
+      </p>
+
+      <div className="about-grid">
+        <div>
+          <h3>Our Services</h3>
+          <ul>
+            <li>Final Year AI Projects</li>
+            <li>Machine Learning Projects</li>
+            <li>Deep Learning Systems</li>
+            <li>Documentation & Reports</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Why Choose Us?</h3>
+          <p>
+            Real-world projects, clean code, proper documentation,
+            and full support for your viva and submission.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       {/* ─── CATEGORIES ─── */}
       <section id="categories" ref={catRef}>
